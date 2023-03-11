@@ -12,6 +12,14 @@ public class BlogApplication {
         SpringApplication.run(BlogApplication.class, args);
     }
     
+    @Bean
+    public FilterRegistrationBean blogAppFilter() {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(new JwtFilter());
 
+        // In case you want the filter to apply to specific URL patterns only
+//        registration.addUrlPatterns("/dawson/*");
+        return registration;
+    }
 
 }

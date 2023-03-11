@@ -23,14 +23,18 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+
 /**
  *
  * @author 1460344
  */
 @Entity
-@Table(name = "posts")
-@NamedQueries({
-    @NamedQuery(name = "Posts.findAll", query = "SELECT p FROM Posts p")})
+//@Table(name = "posts")
+//@NamedQueries({
+//    @NamedQuery(name = "Posts.findAll", query = "SELECT p FROM Posts p")})
 public class Posts implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -56,6 +60,8 @@ public class Posts implements Serializable {
     private Boolean isDeleted;
     @JoinColumn(name = "published_by", referencedColumnName = "user_id")
     @ManyToOne
+//    @JsonProperty(access = Access.WRITE_ONLY)
+    @JsonIgnoreProperties(value = {"postsList", "handler", "hibernateLazyInitializer"}, allowSetters = true)
     private Users publishedBy;
 
     public Posts() {

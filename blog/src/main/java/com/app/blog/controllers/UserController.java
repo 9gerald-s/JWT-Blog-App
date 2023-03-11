@@ -32,5 +32,46 @@ import com.app.blog.util.JWTUtils;
 @RestController
 @RequestMapping("/")
 public class UserController extends EntitiyHawk {
+	
+	@Autowired
+	UserRepository userRepository;
+	@Autowired
+	JWTUtils jwtUtils;
+	
+	@PostMapping("/register")
+	public ResponseEntity registerUser(@Valid @RequestBody RegisterUserDTO registerUserDTO,BindingResult result) {
+		
+		if(result.hasErrors()) {
+			return genericError(result.getFieldError().getField()+" "+result.getFieldError().getDefaultMessage());
+		}
+		
+		Users users = new Users();
+		users.setUserName(registerUserDTO.getName());
+		users.setEmail(registerUserDTO.getEmail());
+		users.setPassword(registerUserDTO.getPassword());
+		
+		userRepository.save(users);
+		return genericResponse("User Registered");
+	}
+	
+	@PostMapping("/login")
+	public ResponseEntity loginUser(@Valid @RequestBody LoginDto loginDto,BindingResult result) {
+		if(result.hasErrors()) {
+			return genericError(result.getFieldError());
+		}
+		
+		Users users = userRepository.findOneByEmailIgnoreCaseAndPassword(loginDto.getEmail(),loginDto.getPassword());
+		System.out.println(users);
+		String data = null;
+		if(users != null) {
+			data = jwtUtils.CreateJWTToken(users);
+			return genericResponse(data);
+		}else {
+			data = "Invalid Username or Password";
+			return genericResponse(data);
+		}
+		
+//		return ResponseEntity.status(500).body("Unable to read JSON value");
+	}
 
 }

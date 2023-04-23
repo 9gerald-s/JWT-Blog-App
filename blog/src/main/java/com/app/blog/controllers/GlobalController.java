@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,12 +69,13 @@ public class GlobalController extends EntitiyHawk {
 
 	@PostMapping("/publish")
 	public ResponseEntity publishPost(@Valid @RequestBody PostDTO postDTO, BindingResult result,
-			@RequestHeader("authorization") String header) {
+			@RequestHeader("authorization") String header,@RequestAttribute("claims") Claims claims) {
 		if (result.hasErrors()) {
 			return genericError(result.getFieldError().getField() + " " + result.getFieldError().getDefaultMessage());
 		}
-		String jwt = header.substring(7);
-		Claims claims = Jwts.parser().setSigningKey(Constants.JWT_SECRET).parseClaimsJws(jwt).getBody();
+//		String jwt = header.substring(7);
+//		Claims claims = Jwts.parser().setSigningKey(Constants.JWT_SECRET).parseClaimsJws(jwt).getBody();
+//		Claims claims = 
 		int userId = Integer.parseInt(claims.get("user_id").toString());
 		Users user = userRepository.findById(userId).get();
 		Posts posts = new Posts();
